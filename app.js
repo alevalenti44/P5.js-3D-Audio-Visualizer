@@ -6,21 +6,42 @@ var w;
 
 var boxSz;
 var gridSz;
-var oscillate = false;
 var zoom = false;
-
+var dropzone;
 var maxBoxSz;
 var minBoxSz;
 var zTranslate;
 
+/*
 function preload() {
   song = loadSound('music/orangeevening.mp3');
 }
+*/
 
 function setup() {
-  createCanvas(windowWidth, windowHeight, WEBGL);
-  button = createButton('Play/Pause');
-  button.mousePressed(pauseMusic);
+  dropzone = select('#dropzone');
+
+  dropzone.dragOver(highlight);
+  function highlight(){
+    dropzone.style('background-color','#ccc');
+  }
+
+  dropzone.dragLeave(unHighlight);
+
+
+
+  dropzone.drop(gotFile,unHighlight);
+
+
+
+  var cnv = createCanvas(windowWidth, windowHeight, WEBGL);
+
+    cnv.style('display', 'block');
+    function windowResized() {
+        resizeCanvas(windowWidth, windowHeight);
+    }
+
+
 
   amplitude = new p5.Amplitude();
   //0.9 smoothing and 64 frequency bands
@@ -28,6 +49,20 @@ function setup() {
   //song.play();
   //0.9 smoothing and 64 frequency bands
   fft = new p5.FFT(0.9, 64);
+}
+
+function gotFile(file){
+    song = loadSound(file.data);
+    button = createButton('Play/Pause');
+    button.mousePressed(pauseMusic);
+    dropzone.style('visibility','hidden');
+
+
+}
+
+function unHighlight(){
+    dropzone.style('background-color','#fff');
+
 }
 
 function pauseMusic() {
@@ -46,9 +81,11 @@ function draw() {
   var spectrum = fft.analyze();
 
   var level = amplitude.getLevel();
-  console.log(level);
-  console.log(spectrum);
 
+  //console.log(level);
+  //console.log(spectrum);
+
+  ambientLight(spectrum[0]);
 
   for (var i = 0; i < spectrum.length; i++) {
     if (spectrum[0] == 255) {
@@ -63,21 +100,16 @@ function draw() {
       gridSz = 216 / 4;
     } else if (spectrum[0] == 180) {
       gridSz = 180 / 3;
-    }else if (spectrum[0] == 160) {
+    } else if (spectrum[0] == 160) {
       gridSz = 160 / 2;
-    }else if (spectrum[0] == 0) {
+    } else if (spectrum[0] == 0) {
       gridSz = 180 / 1;
     }
-      maxBoxSz = spectrum[0];
-      minBoxSz = spectrum[0];
+    maxBoxSz = spectrum[0];
+    minBoxSz = spectrum[0];
   }
 
-
-
   zTranslate = -boxSz;
-
-  //width of bands is equal to width of window divided by number of bands.
-  w = width / 64;
   background(0);
 
   translate(0, 0, zTranslate);
@@ -97,52 +129,12 @@ function draw() {
         if (d > radius - gridSz && d < radius) {
           push();
           translate(x, y, z);
+          normalMaterial();
           box(gridSz);
           pop();
-            normalMaterial();
         }
       }
     }
   }
   pop();
 }
-
-/*
-var song;
-var fft;
-
-//var w is width of frequency bands
-var w;
-
-function preload(){
-    song = loadSound("music/sadjuke.mp3");
-}
-
-function setup() {
-    createCanvas(600,600);
-    colorMode(HSB);
-    colorMode(DEGREES);
-    `();
-
-    //0.9 smoothing and 64 frequency bands
-    fft = new p5.FFT(0.9,64);
-
-    //width of bands is equal to width of window divided by number of bands.
-    w = width/64;
-}
-
-function draw(){
-    background(0);
-    var spectrum = fft.analyze();
-    for(var i =0; i<spectrum.length; i++){
-        var amp = spectrum[i];
-        var y = map(amp,0,255,height,0);
-        fill(i,255,255);
-        //w-2 makes space between the rectangle bars
-        rect(i*w,y,w-2,height-y);
-    }
-    //stroke(255);
-    noStroke();
-    //console.log(spectrum);
-}
-*/
