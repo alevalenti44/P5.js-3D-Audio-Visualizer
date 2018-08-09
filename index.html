@@ -1,10 +1,20 @@
 <html>
 <head>
+   <link href="https://fonts.googleapis.com/css?family=Asap" rel="stylesheet">
+   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
    <script type="text/javascript" src="js/p5.min.js"></script>
    <script type="text/javascript" src="js/p5.sound.js"></script>
    <script type="text/javascript" src="js/p5.dom.min.js"></script>
+
 </head>
 <style>
+   body {
+      margin: 0 auto;
+      padding: 25px;
+      background: #000000;
+      overflow: hidden;
+   }
+
    #dropzone{border-style: dashed;
    text-align: center;
       color: white;
@@ -24,8 +34,16 @@
 
 </style>
 <body>
-<script src="audiovisual.js"></script>
-<p id="dropzone">Drag your mp3 file here!</p>
 
+
+<script src="audiovisual.js"></script>
+<div>
+   <i class="fas fa-pause" id="pauseButton" style="color: white; font-size:36pt; padding:25px; display:none"></i>
+   <i class="fas fa-play" id="playButton" style="color: white; font-size:36pt; padding:25px; display:none"></i>
+
+
+   <p id="dropzone" style="font-family: 'Asap', sans-serif; text-align: center">Drag your mp3 file here!</p>
+
+</div>
 </body>
 </html>
